@@ -1,10 +1,5 @@
 import customtkinter 
 
-#main window
-class App(customtkinter.CTk):
-    def __init__(self):
-        super().__init__()
-
 #Main menu 
 class MenuPage(customtkinter.CTkFrame):
     def __init__(self, parent):
@@ -16,5 +11,20 @@ class ExcelModePage(customtkinter.CTkFrame):
         super().__init__(parent)
 
 
+#main window
+class App(customtkinter.CTk):
+    def __init__(self):
+        super().__init__()
 
-    
+        self.title("Rota Planner")
+        self.geometry("800x800")
+
+        self.grid_rowconfigure(0, weight=1)#row 0 lots of space
+        self.grid_columnconfigure(1, weight=1)#col 2 free space col 1 fixed
+
+        #sidebar
+        self.sidebar = customtkinter.CTkFrame(self,corner_radius=0)
+        self.sidebar.grid(row=0, column=0, sticky="nswe")
+        self.sidebar.grid_rowconfigure(4, weight=1)
+        
+            
