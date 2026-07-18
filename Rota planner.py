@@ -11,6 +11,8 @@ class ExcelModePage(customtkinter.CTkFrame):
         super().__init__(parent)
 
 
+
+
 #main window
 class App(customtkinter.CTk):
     def __init__(self):
@@ -30,6 +32,20 @@ class App(customtkinter.CTk):
         #main part of the grid
         self.main = customtkinter.CTkFrame(self, width=1200, height=700, corner_radius=0)
         self.main.grid(row=0, column=1)
+
+        self.event_btn = customtkinter.CTkButton(self.main, corner_radius=10, font=("Comic sans",25), hover_color="red", width=250, height=150, text="Create event",command=self.event_page)
+        self.event_btn.grid(row=2, column=0, padx=20, pady=20)
+
+        self.event_btn = customtkinter.CTkButton(self.main, corner_radius=10, font=("Comic sans",25), hover_color="red", width=250, height=150, text="Create event",command=self.event_page)
+        self.event_btn.grid(row=2, column=1, padx=20, pady=20)
+
+        self.event_btn = customtkinter.CTkButton(self.main, corner_radius=10, font=("Comic sans",25), hover_color="red", width=250, height=150, text="Create event",command=self.event_page)
+        self.event_btn.grid(row=2, column=2, padx=20, pady=20)
+
+
+    def event_page(self):
+        print("cool")
+
 
 
 
