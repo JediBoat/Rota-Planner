@@ -34,13 +34,13 @@ class App(customtkinter.CTk):
         self.main.grid(row=0, column=1)
 
         self.event_btn = customtkinter.CTkButton(self.main, corner_radius=10, font=("Comic sans",25), hover_color="red", width=250, height=150, text="Create event",command=self.event_page)
-        self.event_btn.grid(row=2, column=0, padx=20, pady=20)
+        self.event_btn.grid(row=2, column=0, padx=20, pady=20, sticky="new")
 
-        self.event_btn = customtkinter.CTkButton(self.main, corner_radius=10, font=("Comic sans",25), hover_color="red", width=250, height=150, text="Create event",command=self.event_page)
-        self.event_btn.grid(row=2, column=1, padx=20, pady=20)
+        self.worker_btn = customtkinter.CTkButton(self.main, corner_radius=10, font=("Comic sans",25), hover_color="red", width=250, height=150, text="Create event",command=self.event_page)
+        self.worker_btn.grid(row=2, column=1, padx=20, pady=20)
 
-        self.event_btn = customtkinter.CTkButton(self.main, corner_radius=10, font=("Comic sans",25), hover_color="red", width=250, height=150, text="Create event",command=self.event_page)
-        self.event_btn.grid(row=2, column=2, padx=20, pady=20)
+        self.planner_btn = customtkinter.CTkButton(self.main, corner_radius=10, font=("Comic sans",25), hover_color="red", width=250, height=150, text="Create event",command=self.event_page)
+        self.planner_btn.grid(row=2, column=2, padx=20, pady=20)
 
 
     def event_page(self):
