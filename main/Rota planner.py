@@ -1,6 +1,9 @@
-import customtkinter 
-from tkinter import * 
-from tkinter.ttk import *
+import tkinter
+import os
+import os.path
+from PIL import Image, ImageTk
+import tkinter.messagebox
+import customtkinter
 
 #Main menu 
 class MenuPage(customtkinter.CTkFrame):
@@ -32,16 +35,27 @@ class App(customtkinter.CTk):
         self.sidebar.grid_rowconfigure(4, weight=1)
 
         #main part of the grid
-        self.main = customtkinter.CTkFrame(self, width=1200, height=700, corner_radius=0)
+        self.main = customtkinter.CTkFrame(self, width=1200, height=700, corner_radius=0,fg_color="transparent")
         self.main.grid(row=0, column=1)
 
-        self.event_btn = customtkinter.CTkButton(self.main, corner_radius=10, font=("Comic sans",25), hover_color="red", width=250, height=150, text="Create event", anchor="s", image=PhotoImage(file = r"C:\Users\jedib\Documents\My project\Rota-Planner\main\Rota planner.py"), command=self.event_page)
-        self.event_btn.grid(row=2, column=0, padx=20, pady=20, sticky="new")
+        self.event_btn = customtkinter.CTkButton(self.main, corner_radius=15, 
+                                                 font=("Comic sans",30), 
+                                                 hover_color="black", width=250, 
+                                                 height=150, text="＋\n\n" + "Create event",
+                                                 anchor="s",command=self.event_page)
+        self.event_btn.grid(row=2, column=0, padx=20, pady=20)
+        
 
-        self.worker_btn = customtkinter.CTkButton(self.main, corner_radius=10, font=("Comic sans",25), hover_color="red", width=250, height=150, text="Create event",command=self.event_page)
+        self.worker_btn = customtkinter.CTkButton(self.main, corner_radius=15, 
+                                                  font=("Comic sans",25), hover_color="red", 
+                                                  width=250, height=150, text="Add employee",
+                                                  anchor="s", command=self.event_page)
         self.worker_btn.grid(row=2, column=1, padx=20, pady=20)
 
-        self.planner_btn = customtkinter.CTkButton(self.main, corner_radius=10, font=("Comic sans",25), hover_color="red", width=250, height=150, text="Create event",command=self.event_page)
+        self.planner_btn = customtkinter.CTkButton(self.main, corner_radius=15, 
+                                                   font=("Comic sans",25), hover_color="red", 
+                                                   width=250, height=150, text="Planner",
+                                                   anchor="s", command=self.event_page)
         self.planner_btn.grid(row=2, column=2, padx=20, pady=20)
 
 
