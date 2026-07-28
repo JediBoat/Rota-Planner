@@ -127,6 +127,27 @@ class MyTabView(customtkinter.CTkTabview):
         self.label = customtkinter.CTkLabel(master=self.tab("Mon"))
         self.label.grid(row=0, column=0, padx=20, pady=10)
          
+class scrollableNames(customtkinter.CTkScrollableFrame):
+    def __init__(self, master, title, values):
+        super().__init__(master, label_text=title)
+        self.grid_columnconfigure(0, weight=1)
+
+        self.values = values
+        self.checkboxes = []
+
+        #create checkbox and append the checkbox to a list for each vaule in a list
+        for i, value in enumerate(self.values):
+            checkbox = customtkinter.CTkCheckBox(self, text=value)
+            checkbox.grid(row=i, column=0, padx=10, pady=(10, 0), sticky="w")
+            self.checkboxes.append(checkbox)
+
+    #returns the vaules of the checkboxes
+    def get(self):
+        checked_checkboxes = []
+        for checkbox in self.checkboxes:
+            if checkbox.get() == 1:
+                checked_checkboxes.append(checkbox.cget("text"))
+        return checked_checkboxes
 
 
 
