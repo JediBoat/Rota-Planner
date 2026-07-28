@@ -96,14 +96,37 @@ class MainFrame(customtkinter.CTkFrame):
 
 
 class EventFrame(customtkinter.CTkFrame):
-     def __init__(self, master, **kwargs):
-        super().__init__(master,
-                        fg_color="transparent",
-                        **kwargs
-                    )
+    def __init__(self, master, **kwargs):
+        super().__init__(
+            master,
+            **kwargs)
+        self.tab_view = MyTabView(master=self)
+        self.tab_view.grid(row=0, column=0, padx=20, pady=20)
+        custom_font = customtkinter.CTkFont("Comic sans", 20, 'bold')
+        self.tab_view._segmented_button.configure(font=custom_font)
 
 
-        
+class MyTabView(customtkinter.CTkTabview):
+    def __init__(self, master, **kwargs):
+        super().__init__(
+            master,
+            width=1250,
+            height=900,
+            **kwargs)
+
+        # create tabs
+        self.add("Mon")
+        self.add("Tues")
+        self.add("Wed")
+        self.add("Thurs")
+        self.add("Fri")
+        self.add("Sat")
+        self.add("Sun")
+
+        # add widgets on tabs
+        self.label = customtkinter.CTkLabel(master=self.tab("Mon"))
+        self.label.grid(row=0, column=0, padx=20, pady=10)
+         
 
 
 
