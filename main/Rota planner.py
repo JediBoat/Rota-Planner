@@ -117,7 +117,6 @@ class MyTabView(customtkinter.CTkTabview):
             **kwargs)
 
 
-
         # create tabs
         self.add("Mon")
         self.add("Tues")
@@ -128,21 +127,54 @@ class MyTabView(customtkinter.CTkTabview):
         self.add("Sun")
 
 
-        values = ["value 1", "value 2", "value 3", "value 4", "value 5", "value 6"]
-        self.scrollable_checkbox_frame = scrollableNames(master=self.tab("Mon"), title="Employees", values=values)
-        self.scrollable_checkbox_frame.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="nsew")
+        self.mon_tab = TabbedFrame(master=self.tab("Mon"))
+        self.tues_tab = TabbedFrame(master=self.tab("Tues"))
+        self.wed_tab = TabbedFrame(master=self.tab("Wed"))
+        self.thur_tab = TabbedFrame(master=self.tab("Thurs"))
+        self.fri_tab = TabbedFrame(master=self.tab("Fri"))
+        self.sat_tab = TabbedFrame(master=self.tab("Sat"))
+        self.sun_tab = TabbedFrame(master=self.tab("Sun"))
 
-        self.button = customtkinter.CTkButton(master=self.tab("Mon"), text="Confirm", command=self.button_callback)
-        self.button.grid(row=3, column=0, padx=10, pady=10, sticky="ew", columnspan=2)
+
+#class for output and saving changing to excel file
+class BtnOuput(customtkinter.CTkFrame):
+    def __init__(self, master, sframe1, sframe2):
+        super().__init__(master)
+
+        self.scrollframe_1 = sframe1
+        self.scrollframe_2 = sframe2
+        self.grid_rowconfigure(0, weight=1)
+
+        self.button = customtkinter.CTkButton(self, text="Confirm", height=200, command=self.button_callback)
+        self.button.grid(row=0, column=2, padx=10, pady=10, sticky="w")
+        self.output = customtkinter.CTkTextbox(self, height=200, width=1400, activate_scrollbars=True)
+        self.output.grid(row=0, column=0,padx=10, pady=10, columnspan=2, sticky="ew")
 
     def button_callback(self):
-        print("checkbox_frame:", self.scrollable_checkbox_frame.get())
+        print("checkbox_frame:", self.scrollframe_1.get())
+        print("checkbox_frame:", self.scrollframe_2.get())
+
+class TabbedFrame(customtkinter.CTkFrame):
+    def __init__(self, master):
+        super().__init__(master)
+
+        values = ["value 1", "value 2", "value 3", "value 4", "value 5", "value 6"]
+
+        self.scrollable_checkbox_frame_1 = scrollableNames(master, title="Employees", values=values)
+        self.scrollable_checkbox_frame_1.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="nsew")
+
+        self.scrollable_checkbox_frame_2 = scrollableNames(master, title="Events", values=values)
+        self.scrollable_checkbox_frame_2.grid(row=0, column=1, padx=10, pady=(10, 0), sticky="nsew")
+
+        self.buttonbar = BtnOuput(master, sframe1=self.scrollable_checkbox_frame_1, sframe2=self.scrollable_checkbox_frame_2)
+        self.buttonbar.grid(row=3, column=0,padx=10, pady=10,columnspan=2, sticky="ew")
+
          
 class scrollableNames(customtkinter.CTkScrollableFrame):
     def __init__(self, master, title, values):
         super().__init__(
             master, label_text=title, label_font=("Comic sans", 20, 'bold'),
-            width=600, height=800)
+            width=700, height=600)
         
         self.grid_columnconfigure(0, weight=1)
         custom_font = customtkinter.CTkFont("Comic sans", 20, 'bold')
