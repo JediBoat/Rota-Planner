@@ -24,7 +24,7 @@ class MainFrame(customtkinter.CTkFrame):
             width=1200,
             height=700,
             corner_radius=0,
-            fg_color="transparent",
+            fg_color="#FFFFFF",
             **kwargs)
         
         script_dir = os.path.dirname(__file__) 
@@ -46,7 +46,7 @@ class MainFrame(customtkinter.CTkFrame):
             text="Create event",
             compound="top",
             anchor="s",
-            command=self.event_page
+            command=lambda: self.master.show_frame(self.master.event_frame)
         )
 
         self.event_btn.grid(row=2, column=0, padx=20, pady=20)
@@ -63,7 +63,7 @@ class MainFrame(customtkinter.CTkFrame):
             text="Add employee",
             compound="top",
             anchor="s",
-            command=self.employee_page
+            command=lambda: self.master.show_frame(self.master.menu_page)
         )
 
         self.worker_btn.grid(row=2, column=1, padx=20, pady=20)
@@ -80,21 +80,12 @@ class MainFrame(customtkinter.CTkFrame):
             text="Planner",
             compound="top",
             anchor="s",
-            command=self.planner_page
+            command=lambda: self.master.show_frame(self.master.excel_page)
         )
 
         self.planner_btn.grid(row=2, column=2, padx=20, pady=20)
 
 
-    def event_page(self):
-        self.master.show_frame(self.master.event_frame)
- 
-    def employee_page(self):
-        self.master.show_frame(self.master.menu_page)
-
-    def planner_page(self):
-        self.master.show_frame(self.master.excel_page)
-        
 
 
 class EventFrame(customtkinter.CTkFrame):
@@ -145,13 +136,10 @@ class BtnOuput(customtkinter.CTkFrame):
         self.scrollframe_2 = sframe2
         self.grid_rowconfigure(0, weight=1)
 
-        self.button = customtkinter.CTkButton(self, text="Confirm", height=200, command=self.button_callback)
+        self.button = customtkinter.CTkButton(self, text="Confirm", height=200, command=lambda: self.output.insert("end", str(self.scrollframe_1.get()) +"\n"+ str(self.scrollframe_2.get())+"\n\n"))
         self.button.grid(row=0, column=2, padx=10, pady=10, sticky="w")
         self.output = customtkinter.CTkTextbox(self, height=200, width=1400, activate_scrollbars=True, font=("Comic sans", 20))
         self.output.grid(row=0, column=0,padx=10, pady=10, columnspan=2, sticky="ew")
-
-    def button_callback(self):
-        self.output.insert("end", str(self.scrollframe_1.get()) +"\n"+ str(self.scrollframe_2.get())+"\n\n")
 
 
 class TabbedFrame(customtkinter.CTkFrame):
@@ -229,10 +217,13 @@ class App(customtkinter.CTk):
 
 
         #sidebar
-        self.sidebar = customtkinter.CTkFrame(self,corner_radius=0, fg_color="#242424")
+        self.sidebar = customtkinter.CTkFrame(self,corner_radius=0, fg_color=("#FFFFFF", "#242424"))
         self.sidebar.grid(row=0, column=0, sticky="nswe")
         self.sidebar.grid_rowconfigure(4, weight=1)
 
+        #Nav buttons
+        self.home_button = customtkinter.CTkButton(self.sidebar, font=("Comic sans",20), height=50, text="Home", command=lambda: self.show_frame(self.main_frame))#Creates a button named Home for menu option
+        self.home_button.grid(row=0, column=0, padx=20, pady=(20, 10))
 
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar, font=("Comic sans",17), text="Appearance Mode:", anchor="w")#Creates a laberl named Appearance for menu option
         self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))#Posistions it on the grid,therefore when the app expand or minmize it will srink or grow to accordance
