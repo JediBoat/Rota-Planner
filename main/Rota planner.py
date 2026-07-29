@@ -4,6 +4,7 @@ import os.path
 from PIL import Image, ImageTk
 import tkinter.messagebox
 import customtkinter
+from database import Database 
 
 
 
@@ -196,6 +197,9 @@ class App(customtkinter.CTk):
 
         self.title("Rota Planner")
         self.geometry("1600x800")
+        self.db = Database()
+        self.db.create_tables()
+        self.db.close_connection()
 
         self.grid_rowconfigure(0, weight=1)#row 0 lots of space
         self.grid_columnconfigure(1, weight=1)#col 2 free space col 1 fixed
