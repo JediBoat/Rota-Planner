@@ -141,7 +141,7 @@ class MyTabView(customtkinter.CTkTabview):
 class scrollableNames(customtkinter.CTkScrollableFrame):
     def __init__(self, master, title, values):
         super().__init__(
-            master, label_text=title,
+            master, label_text=title, label_font=("Comic sans", 20, 'bold'),
             width=600, height=800)
         
         self.grid_columnconfigure(0, weight=1)
