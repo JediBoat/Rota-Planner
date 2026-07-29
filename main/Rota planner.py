@@ -21,10 +21,8 @@ class MainFrame(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(
             master,
-            width=1200,
-            height=700,
             corner_radius=0,
-            fg_color="#FFFFFF",
+            fg_color="transparent",
             **kwargs)
         
         script_dir = os.path.dirname(__file__) 
@@ -32,6 +30,11 @@ class MainFrame(customtkinter.CTkFrame):
         self.eventimg = customtkinter.CTkImage(Image.open(os.path.join(image_path, "addicon_w.png")), size=(130, 130))#Assiagns the size of the Image, path and image to the variable
         self.accountimg = customtkinter.CTkImage(Image.open(os.path.join(image_path, "accounticon_w.png")), size=(120, 120))
         self.excelimg = customtkinter.CTkImage(Image.open(os.path.join(image_path, "excelicon_w.png")), size=(130, 130))
+        self.grid_rowconfigure(0, weight=1)#row 0 lots of space
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+
 
 
         # Create event button
@@ -49,7 +52,7 @@ class MainFrame(customtkinter.CTkFrame):
             command=lambda: self.master.show_frame(self.master.event_frame)
         )
 
-        self.event_btn.grid(row=2, column=0, padx=20, pady=20)
+        self.event_btn.grid(row=0, column=0, padx=20, pady=20, sticky="ew")
 
         # Add employee button
         self.worker_btn = customtkinter.CTkButton(
@@ -66,7 +69,7 @@ class MainFrame(customtkinter.CTkFrame):
             command=lambda: self.master.show_frame(self.master.menu_page)
         )
 
-        self.worker_btn.grid(row=2, column=1, padx=20, pady=20)
+        self.worker_btn.grid(row=0, column=1, padx=20, pady=20, sticky="ew")
 
         # Planner button
         self.planner_btn = customtkinter.CTkButton(
@@ -83,7 +86,7 @@ class MainFrame(customtkinter.CTkFrame):
             command=lambda: self.master.show_frame(self.master.excel_page)
         )
 
-        self.planner_btn.grid(row=2, column=2, padx=20, pady=20)
+        self.planner_btn.grid(row=0, column=2, padx=20, pady=20, sticky="ew")
 
 
 
@@ -94,7 +97,7 @@ class EventFrame(customtkinter.CTkFrame):
             master,
             **kwargs)
         self.tab_view = MyTabView(master=self)
-        self.tab_view.grid(row=0, column=0, padx=20, pady=20)
+        self.tab_view.grid(row=0, column=0, padx=45, pady=15)
         custom_font = customtkinter.CTkFont("Comic sans", 20, 'bold')
         self.tab_view._segmented_button.configure(font=custom_font)
 
@@ -103,7 +106,7 @@ class MyTabView(customtkinter.CTkTabview):
     def __init__(self, master, **kwargs):
         super().__init__(
             master,
-            width=1250,
+            width=1350,
             height=900,
             **kwargs)
 
@@ -205,7 +208,7 @@ class App(customtkinter.CTk):
 
 
 
-        self.main_frame.grid(row=0, column=1)
+        self.main_frame.grid(row=0, column=1, sticky="nsew")
 
         self.event_frame.grid(row=0, column=1)
 
@@ -217,7 +220,7 @@ class App(customtkinter.CTk):
 
 
         #sidebar
-        self.sidebar = customtkinter.CTkFrame(self,corner_radius=0, fg_color=("#FFFFFF", "#242424"))
+        self.sidebar = customtkinter.CTkFrame(self,corner_radius=0)
         self.sidebar.grid(row=0, column=0, sticky="nswe")
         self.sidebar.grid_rowconfigure(4, weight=1)
 
