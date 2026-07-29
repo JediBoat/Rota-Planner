@@ -5,6 +5,8 @@ from PIL import Image, ImageTk
 import tkinter.messagebox
 import customtkinter
 
+
+
 #Main menu 
 class MenuPage(customtkinter.CTkFrame):
     def __init__(self, parent):
@@ -114,6 +116,8 @@ class MyTabView(customtkinter.CTkTabview):
             height=900,
             **kwargs)
 
+
+
         # create tabs
         self.add("Mon")
         self.add("Tues")
@@ -123,21 +127,31 @@ class MyTabView(customtkinter.CTkTabview):
         self.add("Sat")
         self.add("Sun")
 
-        # add widgets on tabs
-        self.label = customtkinter.CTkLabel(master=self.tab("Mon"))
-        self.label.grid(row=0, column=0, padx=20, pady=10)
+
+        values = ["value 1", "value 2", "value 3", "value 4", "value 5", "value 6"]
+        self.scrollable_checkbox_frame = scrollableNames(master=self.tab("Mon"), title="Employees", values=values)
+        self.scrollable_checkbox_frame.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="nsew")
+
+        self.button = customtkinter.CTkButton(master=self.tab("Mon"), text="Confirm", command=self.button_callback)
+        self.button.grid(row=3, column=0, padx=10, pady=10, sticky="ew", columnspan=2)
+
+    def button_callback(self):
+        print("checkbox_frame:", self.scrollable_checkbox_frame.get())
          
 class scrollableNames(customtkinter.CTkScrollableFrame):
     def __init__(self, master, title, values):
-        super().__init__(master, label_text=title)
+        super().__init__(
+            master, label_text=title,
+            width=600, height=800)
+        
         self.grid_columnconfigure(0, weight=1)
-
+        custom_font = customtkinter.CTkFont("Comic sans", 20, 'bold')
         self.values = values
         self.checkboxes = []
 
         #create checkbox and append the checkbox to a list for each vaule in a list
         for i, value in enumerate(self.values):
-            checkbox = customtkinter.CTkCheckBox(self, text=value)
+            checkbox = customtkinter.CTkCheckBox(self, text=value, font=custom_font)
             checkbox.grid(row=i, column=0, padx=10, pady=(10, 0), sticky="w")
             self.checkboxes.append(checkbox)
 
