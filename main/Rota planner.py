@@ -147,12 +147,12 @@ class BtnOuput(customtkinter.CTkFrame):
 
         self.button = customtkinter.CTkButton(self, text="Confirm", height=200, command=self.button_callback)
         self.button.grid(row=0, column=2, padx=10, pady=10, sticky="w")
-        self.output = customtkinter.CTkTextbox(self, height=200, width=1400, activate_scrollbars=True)
+        self.output = customtkinter.CTkTextbox(self, height=200, width=1400, activate_scrollbars=True, font=("Comic sans", 20))
         self.output.grid(row=0, column=0,padx=10, pady=10, columnspan=2, sticky="ew")
 
     def button_callback(self):
-        print("checkbox_frame:", self.scrollframe_1.get())
-        print("checkbox_frame:", self.scrollframe_2.get())
+        self.output.insert("end", str(self.scrollframe_1.get()) +"\n"+ str(self.scrollframe_2.get())+"\n\n")
+
 
 class TabbedFrame(customtkinter.CTkFrame):
     def __init__(self, master):
