@@ -36,6 +36,7 @@ class MainFrame(customtkinter.CTkFrame):
             hover_color="#3A8FFF",
             width=250,
             image=self.eventimg,
+            text_color=("#000000", "#FFFFFF"),
             height=150,
             text="Create event",
             compound="top",
@@ -50,6 +51,7 @@ class MainFrame(customtkinter.CTkFrame):
             corner_radius=15,
             font=("Comic sans", 30),
             hover_color="#3A8FFF",
+            text_color=("#000000", "#FFFFFF"),
             width=250,
             image=self.accountimg,
             height=150,
@@ -66,6 +68,7 @@ class MainFrame(customtkinter.CTkFrame):
             corner_radius=15,
             font=("Comic sans", 30),
             hover_color="#3A8FFF",
+            text_color=("#000000", "#FFFFFF"),
             width=250,
             image=self.excelimg,
             height=150,
@@ -104,6 +107,7 @@ class AddEventPage(customtkinter.CTkFrame):
         self.save_button = customtkinter.CTkButton(
             self.inner_frame, 
             text="Save", 
+            text_color=("#000000", "#FFFFFF"),
             font=("Comic sans", 20), 
             width=200, 
             height=50)  
@@ -143,6 +147,7 @@ class Employeebuttonbar(customtkinter.CTkFrame):
             self,
             text="Add Employee",
             height=50,
+            text_color=("#000000", "#FFFFFF"),
             font=("Comic sans", 20)
         )
 
@@ -150,6 +155,7 @@ class Employeebuttonbar(customtkinter.CTkFrame):
         self.remove_button = customtkinter.CTkButton(
             self,
             text="Remove Employee",
+            text_color=("#000000", "#FFFFFF"),
             height=50,
             font=("Comic sans", 20)
         )
@@ -208,6 +214,7 @@ class BtnOuput(customtkinter.CTkFrame):
             text="Confirm", 
             height=200,
             font=("Comic sans", 20), 
+            text_color=("#000000", "#FFFFFF"),
             command=lambda: self.output.insert("end", str(self.scrollframe_1.get()) +"\n"+ str(self.scrollframe_2.get())+"\n\n"))
         
         self.button.grid(row=0, column=2, padx=10, pady=10, sticky="w")
@@ -298,14 +305,15 @@ class App(customtkinter.CTk):
         self.home_button = customtkinter.CTkButton(
             self.sidebar, 
             font=("Comic sans",20), 
-            height=50, text="Home", 
+            height=50, text="Home",
+            text_color=("#000000", "#FFFFFF"),
             command=lambda: self.show_frame(self.main_frame))#Creates a button named Home for menu option
         
         self.home_button.grid(row=0, column=0, padx=20, pady=(20, 10))
 
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar, font=("Comic sans",17), text="Appearance Mode:", anchor="w")#Creates a laberl named Appearance for menu option
         self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))#Posistions it on the grid,therefore when the app expand or minmize it will srink or grow to accordance
-        self.appearance_mode_menu = customtkinter.CTkOptionMenu(self.sidebar, font=("Comic sans",20), height=50, values=["System","Light", "Dark"],command=self.change_appearance_mode_event)#Creates a menu optition for system apperance within navigation frame
+        self.appearance_mode_menu = customtkinter.CTkOptionMenu(self.sidebar, font=("Comic sans",20), text_color=("#000000", "#FFFFFF"), height=50, values=["System","Light", "Dark"],command=self.change_appearance_mode_event)#Creates a menu optition for system apperance within navigation frame
         self.appearance_mode_menu.grid(row=6, column=0, padx=20, pady=(10, 10), sticky="s")#places menu in an specfic area within the grid, therefore when the app expand or minmize it will srink or grow to accordance
 
     def show_frame(self, frame):
