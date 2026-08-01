@@ -8,10 +8,6 @@ from database import Database
 
 
 
-#Main menu 
-class MenuPage(customtkinter.CTkFrame):
-    def __init__(self, parent):
-        super().__init__(parent)
 
 # planning events
 class ExcelModePage(customtkinter.CTkFrame):
@@ -36,8 +32,6 @@ class MainFrame(customtkinter.CTkFrame):
         self.grid_columnconfigure(1, weight=1)
         self.grid_columnconfigure(2, weight=1)
 
-
-
         # Create event button
         self.event_btn = customtkinter.CTkButton(
             self,
@@ -52,7 +46,6 @@ class MainFrame(customtkinter.CTkFrame):
             anchor="s",
             command=lambda: self.master.show_frame(self.master.event_frame)
         )
-
         self.event_btn.grid(row=0, column=0, padx=20, pady=20, sticky="ew")
 
         # Add employee button
@@ -67,9 +60,8 @@ class MainFrame(customtkinter.CTkFrame):
             text="Add employee",
             compound="top",
             anchor="s",
-            command=lambda: self.master.show_frame(self.master.menu_page)
+            command=lambda: self.master.show_frame(self.master.add_employee_page )
         )
-
         self.worker_btn.grid(row=0, column=1, padx=20, pady=20, sticky="ew")
 
         # Planner button
@@ -86,10 +78,30 @@ class MainFrame(customtkinter.CTkFrame):
             anchor="s",
             command=lambda: self.master.show_frame(self.master.excel_page)
         )
-
         self.planner_btn.grid(row=0, column=2, padx=20, pady=20, sticky="ew")
 
+class AddEmployeePage(customtkinter.CTkFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
 
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(2, weight=1)
+
+        self.frame = customtkinter.CTkFrame(self, corner_radius=15, fg_color="transparent", border_width=3, border_color="black")
+        self.frame.grid(row=1, column=1)
+
+
+        self.title_label = customtkinter.CTkLabel(self.frame, text="Event title", font=("Comic sans", 20, "bold"), anchor="w", width=500)
+        self.title_label.grid(row=1, column=1, padx=10, pady=5, sticky="w")
+        self.title_entry = customtkinter.CTkEntry(self.frame, placeholder_text="Please enter event title", font=("Comic sans", 20), width=400, height=50)
+        self.title_entry.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+
+        self.des_label = customtkinter.CTkLabel(self.frame, text="Event details", font=("Comic sans", 20, "bold"), anchor="w", width=400)
+        self.des_label.grid(row=3, column=1, padx=5, pady=5, sticky="w")
+        self.des_entry = customtkinter.CTkTextbox(self.frame, height=400, width=600, activate_scrollbars=True, font=("Comic sans", 20))
+        self.des_entry.grid(row=4, column=1, padx=5, pady=5)
 
 
 class EventFrame(customtkinter.CTkFrame):
@@ -206,18 +218,15 @@ class App(customtkinter.CTk):
 
         
         self.event_frame = EventFrame(self)
-        self.menu_page = MenuPage(self)
+        self.add_employee_page = AddEmployeePage(self)
         self.excel_page = ExcelModePage(self)
         self.main_frame = MainFrame(self)
 
 
 
         self.main_frame.grid(row=0, column=1, sticky="nsew")
-
         self.event_frame.grid(row=0, column=1)
-
-        self.menu_page.grid(row=0,column=1)
-
+        self.add_employee_page.grid(row=0,column=1, sticky="nsew", padx=20, pady=15)
         self.excel_page.grid(row=0, column=1, sticky="nsew")
 
         self.show_frame(self.main_frame)
