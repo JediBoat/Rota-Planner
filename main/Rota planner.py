@@ -92,15 +92,17 @@ class AddEmployeePage(customtkinter.CTkFrame):
         self.frame = customtkinter.CTkFrame(self, corner_radius=15, fg_color="transparent", border_width=3, border_color="black")
         self.frame.grid(row=1, column=1)
 
+        self.inner_frame = customtkinter.CTkFrame(self.frame, fg_color="transparent")
+        self.inner_frame.grid(row=0, column=0, padx=30, pady=30)
 
-        self.title_label = customtkinter.CTkLabel(self.frame, text="Event title", font=("Comic sans", 20, "bold"), anchor="w", width=500)
-        self.title_label.grid(row=1, column=1, padx=10, pady=5, sticky="w")
-        self.title_entry = customtkinter.CTkEntry(self.frame, placeholder_text="Please enter event title", font=("Comic sans", 20), width=400, height=50)
+        self.title_label = customtkinter.CTkLabel(self.inner_frame, text="Event title", font=("Comic sans", 20, "bold"), anchor="w", width=500)
+        self.title_label.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+        self.title_entry = customtkinter.CTkEntry(self.inner_frame, placeholder_text="Please enter event title", font=("Comic sans", 20), width=400, height=50)
         self.title_entry.grid(row=2, column=1, padx=5, pady=5, sticky="w")
 
-        self.des_label = customtkinter.CTkLabel(self.frame, text="Event details", font=("Comic sans", 20, "bold"), anchor="w", width=400)
+        self.des_label = customtkinter.CTkLabel(self.inner_frame, text="Event details", font=("Comic sans", 20, "bold"), anchor="w", width=400)
         self.des_label.grid(row=3, column=1, padx=5, pady=5, sticky="w")
-        self.des_entry = customtkinter.CTkTextbox(self.frame, height=400, width=600, activate_scrollbars=True, font=("Comic sans", 20))
+        self.des_entry = customtkinter.CTkTextbox(self.inner_frame, height=400, width=600, activate_scrollbars=True, font=("Comic sans", 20))
         self.des_entry.grid(row=4, column=1, padx=5, pady=5)
 
 
@@ -152,7 +154,12 @@ class BtnOuput(customtkinter.CTkFrame):
         self.scrollframe_2 = sframe2
         self.grid_rowconfigure(0, weight=1)
 
-        self.button = customtkinter.CTkButton(self, text="Confirm", height=200, command=lambda: self.output.insert("end", str(self.scrollframe_1.get()) +"\n"+ str(self.scrollframe_2.get())+"\n\n"))
+        self.button = customtkinter.CTkButton(
+            self, 
+            text="Confirm", 
+            height=200, 
+            command=lambda: self.output.insert("end", str(self.scrollframe_1.get()) +"\n"+ str(self.scrollframe_2.get())+"\n\n"))
+        
         self.button.grid(row=0, column=2, padx=10, pady=10, sticky="w")
         self.output = customtkinter.CTkTextbox(self, height=200, width=1400, activate_scrollbars=True, font=("Comic sans", 20))
         self.output.grid(row=0, column=0,padx=10, pady=10, columnspan=2, sticky="ew")
