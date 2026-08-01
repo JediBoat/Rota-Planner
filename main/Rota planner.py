@@ -9,10 +9,6 @@ from database import Database
 
 
 
-# planning events
-class ExcelModePage(customtkinter.CTkFrame):
-    def __init__(self, parent):
-        super().__init__(parent)
 
 class MainFrame(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
