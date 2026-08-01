@@ -40,7 +40,7 @@ class MainFrame(customtkinter.CTkFrame):
             text="Create event",
             compound="top",
             anchor="s",
-            command=lambda: self.master.show_frame(self.master.event_frame)
+            command=lambda: self.master.show_frame(self.master.add_event_page)
         )
         self.event_btn.grid(row=0, column=0, padx=20, pady=20, sticky="ew")
 
@@ -56,7 +56,7 @@ class MainFrame(customtkinter.CTkFrame):
             text="Add employee",
             compound="top",
             anchor="s",
-            command=lambda: self.master.show_frame(self.master.add_employee_page )
+            command=lambda: self.master.show_frame(self.master.employee_page)
         )
         self.worker_btn.grid(row=0, column=1, padx=20, pady=20, sticky="ew")
 
@@ -72,37 +72,90 @@ class MainFrame(customtkinter.CTkFrame):
             text="Planner",
             compound="top",
             anchor="s",
-            command=lambda: self.master.show_frame(self.master.excel_page)
+            command=lambda: self.master.show_frame(self.master.planner_frame)
         )
         self.planner_btn.grid(row=0, column=2, padx=20, pady=20, sticky="ew")
 
-class AddEmployeePage(customtkinter.CTkFrame):
+class AddEventPage(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-
+        #puts the frame in the middle of the window and makes it responsive to window size
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(2, weight=1)
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(2, weight=1)
 
-        self.frame = customtkinter.CTkFrame(self, corner_radius=15, fg_color="transparent", border_width=3, border_color="black")
+        self.frame = customtkinter.CTkFrame(self, corner_radius=15, fg_color="transparent", border_width=3, border_color=("#C4C4C4", "#383737"))
         self.frame.grid(row=1, column=1)
 
         self.inner_frame = customtkinter.CTkFrame(self.frame, fg_color="transparent")
         self.inner_frame.grid(row=0, column=0, padx=30, pady=30)
-
-        self.title_label = customtkinter.CTkLabel(self.inner_frame, text="Event title", font=("Comic sans", 20, "bold"), anchor="w", width=500)
+        #labels and entry boxes for event title and details
+        self.title_label = customtkinter.CTkLabel(self.inner_frame, text="Event title", font=("Comic sans", 20, "bold"), text_color=("#000000", "#FFFFFF"), anchor="w", width=500)
         self.title_label.grid(row=1, column=1, padx=5, pady=5, sticky="w")
         self.title_entry = customtkinter.CTkEntry(self.inner_frame, placeholder_text="Please enter event title", font=("Comic sans", 20), width=400, height=50)
         self.title_entry.grid(row=2, column=1, padx=5, pady=5, sticky="w")
 
-        self.des_label = customtkinter.CTkLabel(self.inner_frame, text="Event details", font=("Comic sans", 20, "bold"), anchor="w", width=400)
+        self.des_label = customtkinter.CTkLabel(self.inner_frame, text="Event details", font=("Comic sans", 20, "bold"), text_color=("#000000", "#FFFFFF"), anchor="w", width=400)
         self.des_label.grid(row=3, column=1, padx=5, pady=5, sticky="w")
         self.des_entry = customtkinter.CTkTextbox(self.inner_frame, height=400, width=600, activate_scrollbars=True, font=("Comic sans", 20))
         self.des_entry.grid(row=4, column=1, padx=5, pady=5)
 
+        self.save_button = customtkinter.CTkButton(
+            self.inner_frame, 
+            text="Save", 
+            font=("Comic sans", 20), 
+            width=200, 
+            height=50)  
+        self.save_button.grid(row=5, column=1, padx=5, pady=5, sticky="nesw")
 
-class EventFrame(customtkinter.CTkFrame):
+# planning events
+class EmployeePage(customtkinter.CTkFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+        #puts the frame in the middle of the window and makes it responsive to window size
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(2, weight=1)
+
+        self.e_frame = customtkinter.CTkFrame(self, corner_radius=15, fg_color=("#C4C4C4", "#383737"))
+        self.e_frame.grid(row=1, column=1)
+
+        #list of employees and buttons to add and remove employees
+        self.name_list = scrollableNames(self.e_frame, title="Employees", values=["Employee 1", "Employee 2", "Employee 3", "Employee 4", "Employee 5"])
+        self.name_list.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+
+        self.button_bar = Employeebuttonbar(self.e_frame, sframe=self.name_list)
+        self.button_bar.grid(row=1, column=0, padx=10, pady=10, sticky="nesw")
+
+        
+class Employeebuttonbar(customtkinter.CTkFrame):
+    def __init__(self, master, sframe):
+        super().__init__(master)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        
+        #buttons to add and remove employees
+        self.add_button = customtkinter.CTkButton(
+            self,
+            text="Add Employee",
+            height=50,
+            font=("Comic sans", 20)
+        )
+
+        self.add_button.grid(row=0, column=0, padx=10, pady=10, sticky="nesw")
+        self.remove_button = customtkinter.CTkButton(
+            self,
+            text="Remove Employee",
+            height=50,
+            font=("Comic sans", 20)
+        )
+        self.remove_button.grid(row=0, column=1, padx=10, pady=10,sticky="nesw")
+
+class PlannerFrame(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(
             master,
@@ -153,7 +206,8 @@ class BtnOuput(customtkinter.CTkFrame):
         self.button = customtkinter.CTkButton(
             self, 
             text="Confirm", 
-            height=200, 
+            height=200,
+            font=("Comic sans", 20), 
             command=lambda: self.output.insert("end", str(self.scrollframe_1.get()) +"\n"+ str(self.scrollframe_2.get())+"\n\n"))
         
         self.button.grid(row=0, column=2, padx=10, pady=10, sticky="w")
@@ -220,17 +274,17 @@ class App(customtkinter.CTk):
         self.grid_columnconfigure(1, weight=1)#col 2 free space col 1 fixed
 
         
-        self.event_frame = EventFrame(self)
-        self.add_employee_page = AddEmployeePage(self)
-        self.excel_page = ExcelModePage(self)
+        self.planner_frame = PlannerFrame(self)
+        self.add_event_page = AddEventPage(self)
+        self.employee_page = EmployeePage(self)
         self.main_frame = MainFrame(self)
 
 
 
         self.main_frame.grid(row=0, column=1, sticky="nsew")
-        self.event_frame.grid(row=0, column=1)
-        self.add_employee_page.grid(row=0,column=1, sticky="nsew", padx=20, pady=15)
-        self.excel_page.grid(row=0, column=1, sticky="nsew")
+        self.planner_frame.grid(row=0, column=1)
+        self.add_event_page.grid(row=0,column=1, sticky="nsew", padx=20, pady=15)
+        self.employee_page.grid(row=0, column=1, sticky="nsew", padx=20, pady=15)
 
         self.show_frame(self.main_frame)
 
@@ -241,7 +295,12 @@ class App(customtkinter.CTk):
         self.sidebar.grid_rowconfigure(4, weight=1)
 
         #Nav buttons
-        self.home_button = customtkinter.CTkButton(self.sidebar, font=("Comic sans",20), height=50, text="Home", command=lambda: self.show_frame(self.main_frame))#Creates a button named Home for menu option
+        self.home_button = customtkinter.CTkButton(
+            self.sidebar, 
+            font=("Comic sans",20), 
+            height=50, text="Home", 
+            command=lambda: self.show_frame(self.main_frame))#Creates a button named Home for menu option
+        
         self.home_button.grid(row=0, column=0, padx=20, pady=(20, 10))
 
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar, font=("Comic sans",17), text="Appearance Mode:", anchor="w")#Creates a laberl named Appearance for menu option
