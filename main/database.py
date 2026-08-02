@@ -1,4 +1,5 @@
 import sqlite3
+from tkinter.font import names
 
 class Database:
     def __init__(self, db_name = "rota_planner.db"):
@@ -30,7 +31,7 @@ class Database:
         """)
         self.connection.commit()
 
-    def add_employee(self, name):
+    def add_employee(self, name):#need to stop duplicates
         self.cursor.execute("""
             INSERT INTO employees (name)
             VALUES (?)
@@ -44,6 +45,17 @@ class Database:
     def search_events(self):
         self.cursor.execute("SELECT * FROM events")
         return self.cursor.fetchall()
+
+    def remove_employee(self, names):
+        self.cursor.executemany(
+            """
+            DELETE FROM employees
+            WHERE name = ?
+            """,
+            [(name,) for name in names]
+        )
+        self.connection.commit()
+    
 
     def close_connection(self):
         self.connection.close()

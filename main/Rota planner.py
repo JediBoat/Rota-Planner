@@ -133,22 +133,20 @@ class EmployeePage(customtkinter.CTkFrame):
         Employees = self.db.search_employees()
         self.db.close_connection()
 
-
-        #list of employees and buttons to add and remove employees
         self.refreshEmployees(Employees)
-     
-
-        self.button_bar = Employeebuttonbar(self.outer_frame, sframe=self.name_list, employee_page=self)
-        self.button_bar.grid(row=1, column=0, padx=10, pady=10, sticky="nesw")
 
     #function to update the list of employees when a new employee is added
     def refreshEmployees(self, Employees):
             try:
                 self.name_list.destroy()#stops it crashing when adding a new employee by destroying the old list and creating a new one
+                self.button_bar.destroy()#stops it crashing when adding a new employee by destroying the old list and creating a new one
             except AttributeError:
                 pass
             self.name_list = scrollableNames(self.outer_frame, title="Employees", values=Employees)#refreshes the list of employees when a new employee is added
             self.name_list.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+
+            self.button_bar = Employeebuttonbar(self.outer_frame, sframe=self.name_list, employee_page=self)
+            self.button_bar.grid(row=1, column=0, padx=10, pady=10, sticky="nesw")
      
 
         
@@ -160,6 +158,7 @@ class Employeebuttonbar(customtkinter.CTkFrame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
 
+        self.sframe = sframe
         self.employee_page = employee_page
         
         #buttons to add and remove employees
@@ -178,6 +177,7 @@ class Employeebuttonbar(customtkinter.CTkFrame):
             text="Remove Employee",
             text_color=("#000000", "#FFFFFF"),
             height=50,
+            command = self.remove_employee,
             font=("Comic sans", 20)
         )
         self.remove_button.grid(row=0, column=1, padx=10, pady=10,sticky="nesw")
@@ -188,6 +188,13 @@ class Employeebuttonbar(customtkinter.CTkFrame):
                 print(f"New employee: {new_employee_text}")
                 self.db = Database()
                 self.db.add_employee(new_employee_text)
+                self.employee_page.refreshEmployees(self.db.search_employees())
+                self.db.close_connection()
+
+    def remove_employee(self):
+                print("checkbox_frame:", self.sframe.get())
+                self.db = Database()
+                self.db.remove_employee(self.sframe.get())
                 self.employee_page.refreshEmployees(self.db.search_employees())
                 self.db.close_connection()
 
