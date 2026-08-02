@@ -135,14 +135,14 @@ class EmployeePage(customtkinter.CTkFrame):
 
 
         #list of employees and buttons to add and remove employees
-        self.test(Employees)
+        self.refreshEmployees(Employees)
      
 
         self.button_bar = Employeebuttonbar(self.outer_frame, sframe=self.name_list, employee_page=self)
         self.button_bar.grid(row=1, column=0, padx=10, pady=10, sticky="nesw")
 
     #function to update the list of employees when a new employee is added
-    def test(self, Employees):
+    def refreshEmployees(self, Employees):
             try:
                 self.name_list.destroy()#stops it crashing when adding a new employee by destroying the old list and creating a new one
             except AttributeError:
@@ -188,7 +188,7 @@ class Employeebuttonbar(customtkinter.CTkFrame):
                 print(f"New employee: {new_employee_text}")
                 self.db = Database()
                 self.db.add_employee(new_employee_text)
-                self.employee_page.test(self.db.search_employees())
+                self.employee_page.refreshEmployees(self.db.search_employees())
                 self.db.close_connection()
 
 
