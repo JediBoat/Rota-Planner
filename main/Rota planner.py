@@ -58,7 +58,7 @@ class MainFrame(customtkinter.CTkFrame):
             text="Add employee",
             compound="top",
             anchor="s",
-            command=lambda: self.master.show_frame(self.master.employee_page)
+            command=lambda: self.master.show_frame(self.master.event_view_frame)
         )
         self.worker_btn.grid(row=0, column=1, padx=20, pady=20, sticky="ew")
 
@@ -88,7 +88,7 @@ class AddEventPage(customtkinter.CTkFrame):
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(2, weight=1)
 
-        self.frame = customtkinter.CTkFrame(self, corner_radius=15, fg_color="transparent", border_width=3, border_color=("#C4C4C4", "#383737"))
+        self.frame = customtkinter.CTkFrame(self, corner_radius=15, fg_color="transparent", border_width=5, border_color=("#C4C4C4", "#383737"))
         self.frame.grid(row=1, column=1)
 
         self.inner_frame = customtkinter.CTkFrame(self.frame, fg_color="transparent")
@@ -148,10 +148,11 @@ class Employeebuttonbar(customtkinter.CTkFrame):
             text="Add Employee",
             height=50,
             text_color=("#000000", "#FFFFFF"),
+            command = self.add_employee,
             font=("Comic sans", 20)
         )
-
         self.add_button.grid(row=0, column=0, padx=10, pady=10, sticky="nesw")
+
         self.remove_button = customtkinter.CTkButton(
             self,
             text="Remove Employee",
@@ -161,6 +162,81 @@ class Employeebuttonbar(customtkinter.CTkFrame):
         )
         self.remove_button.grid(row=0, column=1, padx=10, pady=10,sticky="nesw")
 
+    def add_employee(self):
+                new_employee = customtkinter.CTkInputDialog(text="Enter employee name:", title="Add Employee", font=("Comic sans", 20))
+                new_employee_text = new_employee.get_input()
+                print(f"New employee: {new_employee_text}")
+
+
+class Eventboxes(customtkinter.CTkFrame):
+    def __init__(self, master):
+        super().__init__(master)
+
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+
+
+        self.event_boxes = EventList(self, event=["Event 1", "Event 2", "Event 3", "Event 4", "Event 5"])
+        self.event_boxes.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+
+
+
+
+
+class Eventbox(customtkinter.CTkFrame): 
+    def __init__(self, master): ####### Need to add functionality
+        super().__init__(master)
+
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+
+        self.outer_frame = customtkinter.CTkFrame(self, corner_radius=15, fg_color="transparent", border_width=5, border_color=("#C4C4C4", "#383737"))
+        self.outer_frame.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
+        self.outer_frame.grid_rowconfigure(0, weight=1)
+        self.outer_frame.grid_columnconfigure(0, weight=1)
+
+        self.inner_frame = customtkinter.CTkFrame(self.outer_frame, fg_color=("#C4C4C4", "#383737"), corner_radius=15)
+        self.inner_frame.grid(row=0, column=0, padx=30, pady=30, sticky="nsew")
+        self.inner_frame.grid_columnconfigure(1, weight=1)
+        self.inner_frame.grid_rowconfigure(2, weight=1)
+
+        self.event_label = customtkinter.CTkLabel(self.inner_frame, text="Event title", font=("Comic sans", 20, "bold"), text_color=("#000000", "#FFFFFF"), anchor="w", width=500)
+        self.event_label.grid(row=1, column=1, padx=15, pady=10, sticky="w")
+        self.event_details = customtkinter.CTkTextbox(self.inner_frame, activate_scrollbars=True, font=("Comic sans", 20), fg_color= "transparent")
+        self.event_details.grid(row=2, column=1, padx=5, pady=5, sticky="nsew", columnspan=2)
+        self.event_details.insert("0.0", "Event details go here...")
+
+        self.go_button = customtkinter.CTkButton( ####### Need to add functionality
+            self.inner_frame,
+            text="Edit Event",
+            text_color=("#000000", "#FFFFFF"),
+            font=("Comic sans", 20)
+        )
+        self.go_button.grid(row=3, column=1, padx=10, pady=10, sticky="nesw")
+
+
+class EventList(customtkinter.CTkScrollableFrame):
+    def __init__(self, master, event):
+        super().__init__(master, label_text="Events", label_font=("Comic sans", 20, 'bold'))
+
+        #scrollable frame for events
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+
+        self.event = event
+        self.events = [] ####### Need to add functionality
+        columns = 2
+
+        for i, value in enumerate(self.event):
+            row = i // columns
+            column = (i % columns) + 1 #2 columns for events
+
+            eventboxes = Eventbox(self)
+            eventboxes.grid(row=row, column=column, padx=10, pady=10, sticky="nsew")
+            self.events.append(eventboxes) ####### Need to add functionality
+
+
+    
 class PlannerFrame(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(
@@ -285,6 +361,7 @@ class App(customtkinter.CTk):
         self.add_event_page = AddEventPage(self)
         self.employee_page = EmployeePage(self)
         self.main_frame = MainFrame(self)
+        self.event_view_frame = Eventboxes(self)
 
 
 
@@ -292,6 +369,7 @@ class App(customtkinter.CTk):
         self.planner_frame.grid(row=0, column=1)
         self.add_event_page.grid(row=0,column=1, sticky="nsew", padx=20, pady=15)
         self.employee_page.grid(row=0, column=1, sticky="nsew", padx=20, pady=15)
+        self.event_view_frame.grid(row=0, column=1, sticky="nsew", padx=20, pady=15)
 
         self.show_frame(self.main_frame)
 
