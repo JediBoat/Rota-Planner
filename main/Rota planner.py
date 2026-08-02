@@ -185,18 +185,23 @@ class Employeebuttonbar(customtkinter.CTkFrame):
     def add_employee(self):
                 new_employee = customtkinter.CTkInputDialog(text="Enter employee name:", title="Add Employee", font=("Comic sans", 20))
                 new_employee_text = new_employee.get_input()
-                print(f"New employee: {new_employee_text}")
-                self.db = Database()
-                self.db.add_employee(new_employee_text)
-                self.employee_page.refreshEmployees(self.db.search_employees())
-                self.db.close_connection()
+                if self.isNullOrWhiteSpace(new_employee_text):
+                    print("No input provided")#del
+                else:
+                    print(f"New employee: {new_employee_text}")#del
+                    self.db = Database()
+                    self.db.add_employee(new_employee_text)
+                    self.employee_page.refreshEmployees(self.db.search_employees())
+                    self.db.close_connection()
 
     def remove_employee(self):
-                print("checkbox_frame:", self.sframe.get())
                 self.db = Database()
                 self.db.remove_employee(self.sframe.get())
                 self.employee_page.refreshEmployees(self.db.search_employees())
                 self.db.close_connection()
+
+    def isNullOrWhiteSpace(self, str=None):
+        return not str or str.isspace()
 
 
 class Eventboxes(customtkinter.CTkFrame):
@@ -370,13 +375,13 @@ class TabbedFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
 
-
+        self.db = Database()
+        values = self.db.search_employees()
+        self.db.close_connection()
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=0)
-
-        values = ["value 1", "value 2", "value 3", "value 4", "value 5", "value 6"]
 
         self.scrollable_checkbox_frame_1 = scrollableNames(self, title="Employees", values=values)
         self.scrollable_checkbox_frame_1.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
@@ -386,6 +391,7 @@ class TabbedFrame(customtkinter.CTkFrame):
 
         self.buttonbar = BtnOuput(self, sframe1=self.scrollable_checkbox_frame_1, sframe2=self.scrollable_checkbox_frame_2)
         self.buttonbar.grid(row=1, column=0,padx=10, pady=10,columnspan=2, sticky="ew")
+        
 
          
 class scrollableNames(customtkinter.CTkScrollableFrame):
@@ -470,6 +476,7 @@ class App(customtkinter.CTk):
     def show_frame(self, frame):
         frame.tkraise()
         #function to be run when certain buttons are clicked
+    
     def change_appearance_mode_event(self, new_appearance_mode):#Creates a function that takes inputds of the user request  appearance  of application
         customtkinter.set_appearance_mode(new_appearance_mode)#Changes appearance on apps use input from the menu opition 
 
