@@ -21,6 +21,13 @@ class Database:
                 details TEXT NOT NULL
             )
         """)
+        #times table
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS times (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                event_times DATETIME
+            )
+        """)
         self.connection.commit()
 
     def add_employee(self, name):
@@ -31,8 +38,8 @@ class Database:
         self.connection.commit()
 
     def search_employees(self):
-        self.cursor.execute("SELECT * FROM employees")
-        return self.cursor.fetchall()
+        self.cursor.execute("SELECT name FROM employees")
+        return [row[0] for row in self.cursor.fetchall()]
 
     def search_events(self):
         self.cursor.execute("SELECT * FROM events")

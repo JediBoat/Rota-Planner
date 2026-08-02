@@ -7,9 +7,6 @@ import customtkinter
 from database import Database 
 
 
-
-
-
 class MainFrame(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(
@@ -132,22 +129,38 @@ class EmployeePage(customtkinter.CTkFrame):
         self.outer_frame.grid_rowconfigure(1, weight=0)
         self.outer_frame.grid_columnconfigure(0, weight=1)
 
+        self.db = Database()
+        Employees = self.db.search_employees()
+        self.db.close_connection()
+
+
         #list of employees and buttons to add and remove employees
-        self.name_list = scrollableNames(self.outer_frame, title="Employees", values=["Employee 1", "Employee 2", "Employee 3", "Employee 4", "Employee 5"])
-        self.name_list.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+        self.test(Employees)
      
 
-        self.button_bar = Employeebuttonbar(self.outer_frame, sframe=self.name_list)
+        self.button_bar = Employeebuttonbar(self.outer_frame, sframe=self.name_list, employee_page=self)
         self.button_bar.grid(row=1, column=0, padx=10, pady=10, sticky="nesw")
+
+    #function to update the list of employees when a new employee is added
+    def test(self, Employees):
+            try:
+                self.name_list.destroy()#stops it crashing when adding a new employee by destroying the old list and creating a new one
+            except AttributeError:
+                pass
+            self.name_list = scrollableNames(self.outer_frame, title="Employees", values=Employees)#refreshes the list of employees when a new employee is added
+            self.name_list.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+     
 
         
 class Employeebuttonbar(customtkinter.CTkFrame):
-    def __init__(self, master, sframe):
+    def __init__(self, master, sframe, employee_page):
         super().__init__(master)
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
+
+        self.employee_page = employee_page
         
         #buttons to add and remove employees
         self.add_button = customtkinter.CTkButton(
@@ -173,6 +186,10 @@ class Employeebuttonbar(customtkinter.CTkFrame):
                 new_employee = customtkinter.CTkInputDialog(text="Enter employee name:", title="Add Employee", font=("Comic sans", 20))
                 new_employee_text = new_employee.get_input()
                 print(f"New employee: {new_employee_text}")
+                self.db = Database()
+                self.db.add_employee(new_employee_text)
+                self.employee_page.test(self.db.search_employees())
+                self.db.close_connection()
 
 
 class Eventboxes(customtkinter.CTkFrame):
