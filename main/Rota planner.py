@@ -41,7 +41,7 @@ class MainFrame(customtkinter.CTkFrame):
             text="Create event",
             compound="top",
             anchor="s",
-            command=lambda: self.master.show_frame(self.master.add_event_page)
+            command=lambda: self.master.show_frame(self.master.event_view_frame)
         )
         self.event_btn.grid(row=0, column=0, padx=20, pady=20, sticky="ew")
 
@@ -58,7 +58,7 @@ class MainFrame(customtkinter.CTkFrame):
             text="Add employee",
             compound="top",
             anchor="s",
-            command=lambda: self.master.show_frame(self.master.event_view_frame)
+            command=lambda: self.master.show_frame(self.master.employee_page)
         )
         self.worker_btn.grid(row=0, column=1, padx=20, pady=20, sticky="ew")
 
@@ -119,18 +119,25 @@ class EmployeePage(customtkinter.CTkFrame):
         super().__init__(master, **kwargs)
         #puts the frame in the middle of the window and makes it responsive to window size
         self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
         self.grid_columnconfigure(2, weight=1)
+
         self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)
         self.grid_rowconfigure(2, weight=1)
 
-        self.e_frame = customtkinter.CTkFrame(self, corner_radius=15, fg_color=("#C4C4C4", "#383737"))
-        self.e_frame.grid(row=1, column=1)
+        self.outer_frame = customtkinter.CTkFrame(self, corner_radius=15, fg_color=("#C4C4C4", "#383737"))
+        self.outer_frame.grid(row=1, column=1, sticky="nsew")
+        self.outer_frame.grid_rowconfigure(0, weight=1)
+        self.outer_frame.grid_rowconfigure(1, weight=0)
+        self.outer_frame.grid_columnconfigure(0, weight=1)
 
         #list of employees and buttons to add and remove employees
-        self.name_list = scrollableNames(self.e_frame, title="Employees", values=["Employee 1", "Employee 2", "Employee 3", "Employee 4", "Employee 5"])
+        self.name_list = scrollableNames(self.outer_frame, title="Employees", values=["Employee 1", "Employee 2", "Employee 3", "Employee 4", "Employee 5"])
         self.name_list.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+     
 
-        self.button_bar = Employeebuttonbar(self.e_frame, sframe=self.name_list)
+        self.button_bar = Employeebuttonbar(self.outer_frame, sframe=self.name_list)
         self.button_bar.grid(row=1, column=0, padx=10, pady=10, sticky="nesw")
 
         
@@ -242,19 +249,18 @@ class PlannerFrame(customtkinter.CTkFrame):
         super().__init__(
             master,
             **kwargs)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        
         self.tab_view = MyTabView(master=self)
-        self.tab_view.grid(row=0, column=0, padx=45, pady=15)
+        self.tab_view.grid(row=0, column=0, sticky="nsew")
         custom_font = customtkinter.CTkFont("Comic sans", 20, 'bold')
         self.tab_view._segmented_button.configure(font=custom_font)
 
 
 class MyTabView(customtkinter.CTkTabview):
     def __init__(self, master, **kwargs):
-        super().__init__(
-            master,
-            width=1350,
-            height=900,
-            **kwargs)
+        super().__init__( master, **kwargs)
 
 
         # create tabs
@@ -265,15 +271,50 @@ class MyTabView(customtkinter.CTkTabview):
         self.add("Fri")
         self.add("Sat")
         self.add("Sun")
+        
 
+        mon_tab = self.tab("Mon")
+        mon_tab.grid_rowconfigure(0, weight=1)
+        mon_tab.grid_columnconfigure(0, weight=1)
+        self.mon_tab = TabbedFrame(mon_tab)
+        self.mon_tab.grid(row=0, column=0,sticky="nsew")
 
-        self.mon_tab = TabbedFrame(master=self.tab("Mon"))
-        self.tues_tab = TabbedFrame(master=self.tab("Tues"))
-        self.wed_tab = TabbedFrame(master=self.tab("Wed"))
-        self.thur_tab = TabbedFrame(master=self.tab("Thurs"))
-        self.fri_tab = TabbedFrame(master=self.tab("Fri"))
-        self.sat_tab = TabbedFrame(master=self.tab("Sat"))
-        self.sun_tab = TabbedFrame(master=self.tab("Sun"))
+        tues_tab = self.tab("Tues")
+        tues_tab.grid_rowconfigure(0, weight=1)
+        tues_tab.grid_columnconfigure(0, weight=1)
+        self.tues_tab = TabbedFrame(tues_tab)
+        self.tues_tab.grid(row=0, column=0,sticky="nsew")
+
+        wed_tab = self.tab("Wed")
+        wed_tab.grid_rowconfigure(0, weight=1)
+        wed_tab.grid_columnconfigure(0, weight=1)
+        self.wed_tab = TabbedFrame(wed_tab)
+        self.wed_tab.grid(row=0, column=0,sticky="nsew")
+
+        thurs_tab = self.tab("Thurs")
+        thurs_tab.grid_rowconfigure(0, weight=1)
+        thurs_tab.grid_columnconfigure(0, weight=1)
+        self.thurs_tab = TabbedFrame(thurs_tab)
+        self.thurs_tab.grid(row=0, column=0,sticky="nsew")
+
+        fri_tab = self.tab("Fri")
+        fri_tab.grid_rowconfigure(0, weight=1)
+        fri_tab.grid_columnconfigure(0, weight=1)
+        self.fri_tab = TabbedFrame(fri_tab)
+        self.fri_tab.grid(row=0, column=0,sticky="nsew")
+
+        sat_tab = self.tab("Sat")
+        sat_tab.grid_rowconfigure(0, weight=1)
+        sat_tab.grid_columnconfigure(0, weight=1)
+        self.sat_tab = TabbedFrame(sat_tab)
+        self.sat_tab.grid(row=0, column=0,sticky="nsew")
+
+        sun_tab = self.tab("Sun")
+        sun_tab.grid_rowconfigure(0, weight=1)
+        sun_tab.grid_columnconfigure(0, weight=1)
+        self.sun_tab = TabbedFrame(sun_tab)
+        self.sun_tab.grid(row=0, column=0,sticky="nsew")
+
 
 
 #class for output and saving changing to excel file
@@ -281,9 +322,12 @@ class BtnOuput(customtkinter.CTkFrame):
     def __init__(self, master, sframe1, sframe2):
         super().__init__(master)
 
+
         self.scrollframe_1 = sframe1
         self.scrollframe_2 = sframe2
         self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(2, weight=0)
 
         self.button = customtkinter.CTkButton(
             self, 
@@ -294,31 +338,36 @@ class BtnOuput(customtkinter.CTkFrame):
             command=lambda: self.output.insert("end", str(self.scrollframe_1.get()) +"\n"+ str(self.scrollframe_2.get())+"\n\n"))
         
         self.button.grid(row=0, column=2, padx=10, pady=10, sticky="w")
-        self.output = customtkinter.CTkTextbox(self, height=200, width=1400, activate_scrollbars=True, font=("Comic sans", 20))
-        self.output.grid(row=0, column=0,padx=10, pady=10, columnspan=2, sticky="ew")
+        self.output = customtkinter.CTkTextbox(self, activate_scrollbars=True, font=("Comic sans", 20))
+        self.output.grid(row=0, column=0,padx=10, pady=10, columnspan=2, sticky="nsew")
 
 
 class TabbedFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
 
+
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=0)
+
         values = ["value 1", "value 2", "value 3", "value 4", "value 5", "value 6"]
 
-        self.scrollable_checkbox_frame_1 = scrollableNames(master, title="Employees", values=values)
-        self.scrollable_checkbox_frame_1.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="nsew")
+        self.scrollable_checkbox_frame_1 = scrollableNames(self, title="Employees", values=values)
+        self.scrollable_checkbox_frame_1.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
-        self.scrollable_checkbox_frame_2 = scrollableNames(master, title="Events", values=values)
-        self.scrollable_checkbox_frame_2.grid(row=0, column=1, padx=10, pady=(10, 0), sticky="nsew")
+        self.scrollable_checkbox_frame_2 = scrollableNames(self, title="Events", values=values)
+        self.scrollable_checkbox_frame_2.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
-        self.buttonbar = BtnOuput(master, sframe1=self.scrollable_checkbox_frame_1, sframe2=self.scrollable_checkbox_frame_2)
-        self.buttonbar.grid(row=3, column=0,padx=10, pady=10,columnspan=2, sticky="ew")
+        self.buttonbar = BtnOuput(self, sframe1=self.scrollable_checkbox_frame_1, sframe2=self.scrollable_checkbox_frame_2)
+        self.buttonbar.grid(row=1, column=0,padx=10, pady=10,columnspan=2, sticky="ew")
 
          
 class scrollableNames(customtkinter.CTkScrollableFrame):
     def __init__(self, master, title, values):
         super().__init__(
-            master, label_text=title, label_font=("Comic sans", 20, 'bold'),
-            width=700, height=600)
+            master, label_text=title, label_font=("Comic sans", 20, 'bold'))
         
         self.grid_columnconfigure(0, weight=1)
         custom_font = customtkinter.CTkFont("Comic sans", 20, 'bold')
@@ -366,7 +415,7 @@ class App(customtkinter.CTk):
 
 
         self.main_frame.grid(row=0, column=1, sticky="nsew")
-        self.planner_frame.grid(row=0, column=1)
+        self.planner_frame.grid(row=0, column=1, sticky="nsew", padx=20, pady=15)
         self.add_event_page.grid(row=0,column=1, sticky="nsew", padx=20, pady=15)
         self.employee_page.grid(row=0, column=1, sticky="nsew", padx=20, pady=15)
         self.event_view_frame.grid(row=0, column=1, sticky="nsew", padx=20, pady=15)
