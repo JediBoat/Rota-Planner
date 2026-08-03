@@ -302,47 +302,31 @@ class MyTabView(customtkinter.CTkTabview):
         self.add("Sun")
         
 
-        mon_tab = self.tab("Mon")
-        mon_tab.grid_rowconfigure(0, weight=1)
-        mon_tab.grid_columnconfigure(0, weight=1)
-        self.mon_tab = TabbedFrame(mon_tab)
-        self.mon_tab.grid(row=0, column=0,sticky="nsew")
+        self._segmented_button.configure(command=self.tab_changed)
+        self.refresh_tab_data("Mon")
 
-        tues_tab = self.tab("Tues")
-        tues_tab.grid_rowconfigure(0, weight=1)
-        tues_tab.grid_columnconfigure(0, weight=1)
-        self.tues_tab = TabbedFrame(tues_tab)
-        self.tues_tab.grid(row=0, column=0,sticky="nsew")
 
-        wed_tab = self.tab("Wed")
-        wed_tab.grid_rowconfigure(0, weight=1)
-        wed_tab.grid_columnconfigure(0, weight=1)
-        self.wed_tab = TabbedFrame(wed_tab)
-        self.wed_tab.grid(row=0, column=0,sticky="nsew")
+    def tab_changed(self, selected_tab):
+        self.refresh_tab_data(selected_tab)
 
-        thurs_tab = self.tab("Thurs")
-        thurs_tab.grid_rowconfigure(0, weight=1)
-        thurs_tab.grid_columnconfigure(0, weight=1)
-        self.thurs_tab = TabbedFrame(thurs_tab)
-        self.thurs_tab.grid(row=0, column=0,sticky="nsew")
 
-        fri_tab = self.tab("Fri")
-        fri_tab.grid_rowconfigure(0, weight=1)
-        fri_tab.grid_columnconfigure(0, weight=1)
-        self.fri_tab = TabbedFrame(fri_tab)
-        self.fri_tab.grid(row=0, column=0,sticky="nsew")
+    def refresh_tab_data(self, tab_name):
+        tab = self.tab(tab_name)
 
-        sat_tab = self.tab("Sat")
-        sat_tab.grid_rowconfigure(0, weight=1)
-        sat_tab.grid_columnconfigure(0, weight=1)
-        self.sat_tab = TabbedFrame(sat_tab)
-        self.sat_tab.grid(row=0, column=0,sticky="nsew")
+        # Destroy the old frame if it exists
+        old_frame = getattr( self, f"{tab_name.lower()}_tab", None)
 
-        sun_tab = self.tab("Sun")
-        sun_tab.grid_rowconfigure(0, weight=1)
-        sun_tab.grid_columnconfigure(0, weight=1)
-        self.sun_tab = TabbedFrame(sun_tab)
-        self.sun_tab.grid(row=0, column=0,sticky="nsew")
+        if old_frame is not None:
+            old_frame.destroy()
+
+        tab.grid_rowconfigure(0, weight=1)
+        tab.grid_columnconfigure(0, weight=1)
+
+        new_frame = TabbedFrame(tab)
+        new_frame.grid( row=0, column=0, sticky="nsew")
+
+        # Store reference
+        setattr(self, f"{tab_name.lower()}_tab", new_frame )
 
 
 
