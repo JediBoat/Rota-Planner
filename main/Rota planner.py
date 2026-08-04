@@ -107,8 +107,24 @@ class AddEventPage(customtkinter.CTkFrame):
             text_color=("#000000", "#FFFFFF"),
             font=("Comic sans", 20), 
             width=200, 
-            height=50)  
+            height=50
+            ,command=self.store_event)  
+        
         self.save_button.grid(row=5, column=1, padx=5, pady=5, sticky="nesw")
+
+    def store_event(self):
+        event_title = self.title_entry.get()
+        event_details = self.des_entry.get("1.0", "end-1c")  # Get the text from the Text widget
+
+        if event_title and event_details:
+            self.db = Database()
+            self.db.add_event(event_title, event_details)
+            self.db.close_connection()
+            self.title_entry.delete(0, "end")  # Clear the title entry
+            self.des_entry.delete("1.0", "end")  # Clear the details text
+            tkinter.messagebox.showinfo("Success", "Event saved successfully!")
+        else:
+            tkinter.messagebox.showwarning("Input Error", "Please fill in both the title and details.")
 
 # planning events
 class EmployeePage(customtkinter.CTkFrame):
@@ -186,19 +202,20 @@ class Employeebuttonbar(customtkinter.CTkFrame):
                 new_employee = customtkinter.CTkInputDialog(text="Enter employee name:", title="Add Employee", font=("Comic sans", 20))
                 new_employee_text = new_employee.get_input()
                 if self.isNullOrWhiteSpace(new_employee_text):
-                    print("No input provided")#del
+                    tkinter.messagebox.showwarning("Input Error", "Please fill in the employee name.")
                 else:
-                    print(f"New employee: {new_employee_text}")#del
                     self.db = Database()
                     self.db.add_employee(new_employee_text)
                     self.employee_page.refreshEmployees(self.db.search_employees())
                     self.db.close_connection()
+                    tkinter.messagebox.showinfo("Success", "Employee added successfully!")
 
     def remove_employee(self):
                 self.db = Database()
                 self.db.remove_employee(self.sframe.get())
                 self.employee_page.refreshEmployees(self.db.search_employees())
                 self.db.close_connection()
+                tkinter.messagebox.showinfo("Success", "Employee removed successfully!")
 
     def isNullOrWhiteSpace(self, str=None):
         return not str or str.isspace()
@@ -217,6 +234,15 @@ class Eventboxes(customtkinter.CTkFrame):
         self.event_boxes = EventList(self, event=result)
         self.event_boxes.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
+        self.add_btn = customtkinter.CTkButton(
+            self,
+            text="Add Event", 
+            text_color=("#000000", "#FFFFFF"),
+            font=("Comic sans", 20), 
+            command=lambda: self.master.show_frame(self.master.add_event_page)
+        )
+        self.add_btn.grid(row=1, column=0, padx=10, pady=10, sticky="nesw")
+
 
 class Eventbox(customtkinter.CTkFrame): 
     def __init__(self, master, title, text): ####### Need to add functionality
@@ -231,12 +257,12 @@ class Eventbox(customtkinter.CTkFrame):
         self.outer_frame.grid_columnconfigure(0, weight=1)
 
         self.inner_frame = customtkinter.CTkFrame(self.outer_frame, fg_color=("#C4C4C4", "#383737"), corner_radius=15)
-        self.inner_frame.grid(row=0, column=0, padx=30, pady=30, sticky="nsew")
+        self.inner_frame.grid(row=0, column=0, padx=15, pady=30, sticky="nsew")
         self.inner_frame.grid_columnconfigure(1, weight=1)
         self.inner_frame.grid_rowconfigure(2, weight=1)
 
         self.event_label = customtkinter.CTkLabel(self.inner_frame, text=title, font=("Comic sans", 20, "bold"), text_color=("#000000", "#FFFFFF"), anchor="w", width=500)
-        self.event_label.grid(row=1, column=1, padx=15, pady=10, sticky="w")
+        self.event_label.grid(row=1, column=1, padx=10, pady=10, sticky="w")
         self.event_details = customtkinter.CTkTextbox(self.inner_frame, activate_scrollbars=True, font=("Comic sans", 20), fg_color= "transparent")
         self.event_details.grid(row=2, column=1, padx=5, pady=5, sticky="nsew", columnspan=2)
         self.event_details.insert("0.0", text)
@@ -247,7 +273,29 @@ class Eventbox(customtkinter.CTkFrame):
             text_color=("#000000", "#FFFFFF"),
             font=("Comic sans", 20)
         )
-        self.go_button.grid(row=3, column=1, padx=10, pady=10, sticky="nesw")
+        self.go_button.grid(row=3, column=1, padx=10, pady=10, sticky="nsew")
+
+        self.delete_button = customtkinter.CTkButton( ####### Need to add functionality
+            self.inner_frame,
+            text="Delete Event",
+            text_color=("#000000", "#FFFFFF"),
+            font=("Comic sans", 20),
+            command= lambda: self.on_delete(title)
+        )
+        self.delete_button.grid(row=3, column=3, padx=10, pady=10, sticky="nswe", columnspan=2)
+
+    def on_delete(self, title):
+        confirm = tkinter.messagebox.askyesno("Confirm Delete", "Are you sure you want to delete this event?")
+        if confirm:
+            self.destroy()  # Destroy the current EventList
+            self.db = Database()
+            self.db.remove_event(title)
+            self.master.event_boxes.destroy()  # Destroy the current EventList
+            self.master.event_boxes = EventList(self.master, event=self.db.get_events())
+            self.db.close_connection()
+            self.master.event_boxes.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+                
+            tkinter.messagebox.showinfo("Success", "Event deleted successfully!")
 
 
 class EventList(customtkinter.CTkScrollableFrame):
