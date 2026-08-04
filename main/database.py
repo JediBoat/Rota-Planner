@@ -5,13 +5,14 @@ class Database:
     def __init__(self, db_name = "rota_planner.db"):
         self.connection = sqlite3.connect(db_name)
         self.cursor = self.connection.cursor()
-
+    
     def create_tables(self):
         # Create an employees table
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS employees (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL
+                name TEXT NOT NULL,
+                dep TEXT NOT NULL
             )
         """)
         # Create an events table
@@ -26,7 +27,7 @@ class Database:
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS times (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                event_times DATETIME
+                event_times TEXT NOT NUll
             )
         """)
         self.connection.commit()
@@ -77,6 +78,15 @@ class Database:
     def get_event_names(self):
         self.cursor.execute("SELECT name FROM events")
         return [row[0] for row in self.cursor.fetchall()]
+    
+    def update_event(self, name, new_details):
+        self.cursor.execute("""
+            UPDATE events
+            SET details = ?, 
+            name = ?
+            WHERE name = ?
+        """, (new_details, name))
+        self.connection.commit()
     
 
     def close_connection(self):

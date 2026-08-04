@@ -77,13 +77,15 @@ class MainFrame(customtkinter.CTkFrame):
         self.planner_btn.grid(row=0, column=2, padx=20, pady=20, sticky="ew")
 
 class AddEventPage(customtkinter.CTkFrame):
-    def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
+    def __init__(self, master, event_boxes):
+        super().__init__(master)
         #puts the frame in the middle of the window and makes it responsive to window size
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(2, weight=1)
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(2, weight=1)
+
+        self.event_frame = event_boxes
 
         self.frame = customtkinter.CTkFrame(self, corner_radius=15, fg_color="transparent", border_width=5, border_color=("#C4C4C4", "#383737"))
         self.frame.grid(row=1, column=1)
@@ -123,6 +125,7 @@ class AddEventPage(customtkinter.CTkFrame):
             self.title_entry.delete(0, "end")  # Clear the title entry
             self.des_entry.delete("1.0", "end")  # Clear the details text
             tkinter.messagebox.showinfo("Success", "Event saved successfully!")
+            self.event_frame.refresh_event_boxes()  # Refresh the event boxes to show the new event
         else:
             tkinter.messagebox.showwarning("Input Error", "Please fill in both the title and details.")
 
@@ -243,6 +246,14 @@ class Eventboxes(customtkinter.CTkFrame):
         )
         self.add_btn.grid(row=1, column=0, padx=10, pady=10, sticky="nesw")
 
+    def refresh_event_boxes(self):
+        self.db = Database()
+        result = self.db.get_events()
+        self.db.close_connection()
+        self.event_boxes.destroy()  # Destroy the current EventList
+        self.event_boxes = EventList(self, event=result)  # Create a new EventList with updated data
+        self.event_boxes.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")  # Place the new EventList in the grid
+
 
 class Eventbox(customtkinter.CTkFrame): 
     def __init__(self, master, title, text): ####### Need to add functionality
@@ -264,7 +275,7 @@ class Eventbox(customtkinter.CTkFrame):
         self.event_label = customtkinter.CTkLabel(self.inner_frame, text=title, font=("Comic sans", 20, "bold"), text_color=("#000000", "#FFFFFF"), anchor="w", width=500)
         self.event_label.grid(row=1, column=1, padx=10, pady=10, sticky="w")
         self.event_details = customtkinter.CTkTextbox(self.inner_frame, activate_scrollbars=True, font=("Comic sans", 20), fg_color= "transparent")
-        self.event_details.grid(row=2, column=1, padx=5, pady=5, sticky="nsew", columnspan=2)
+        self.event_details.grid(row=2, column=1, padx=5, pady=5, sticky="nsew")
         self.event_details.insert("0.0", text)
 
         self.go_button = customtkinter.CTkButton( ####### Need to add functionality
@@ -415,6 +426,7 @@ class TabbedFrame(customtkinter.CTkFrame):
         self.db.close_connection()
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=0)
 
@@ -424,8 +436,11 @@ class TabbedFrame(customtkinter.CTkFrame):
         self.scrollable_checkbox_frame_2 = scrollableNames(self, title="Events", values=events)
         self.scrollable_checkbox_frame_2.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
-        self.buttonbar = BtnOuput(self, sframe1=self.scrollable_checkbox_frame_1, sframe2=self.scrollable_checkbox_frame_2)
-        self.buttonbar.grid(row=1, column=0,padx=10, pady=10,columnspan=2, sticky="ew")
+        self.scrollable_checkbox_frame_3 = scrollableNames(self, title="Events", values=events)
+        self.scrollable_checkbox_frame_3.grid(row=0, column=2, padx=10, pady=10, sticky="nsew")
+
+        self.buttonbar = BtnOuput(self, sframe1=self.scrollable_checkbox_frame_1, sframe2=self.scrollable_checkbox_frame_3)
+        self.buttonbar.grid(row=1, column=0,padx=10, pady=10,columnspan=3, sticky="ew")
         
 
          
@@ -472,10 +487,11 @@ class App(customtkinter.CTk):
 
         
         self.planner_frame = PlannerFrame(self)
-        self.add_event_page = AddEventPage(self)
+        self.event_view_frame = Eventboxes(self)
+        self.add_event_page = AddEventPage(self, self.event_view_frame)
         self.employee_page = EmployeePage(self)
         self.main_frame = MainFrame(self)
-        self.event_view_frame = Eventboxes(self)
+
 
 
 
