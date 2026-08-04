@@ -186,7 +186,7 @@ class Employeebuttonbar(customtkinter.CTkFrame):
             text="Add Employee",
             height=50,
             text_color=("#000000", "#FFFFFF"),
-            command = self.add_employee,
+            command = self.adding_employee,
             font=("Comic sans", 20)
         )
         self.add_button.grid(row=0, column=0, padx=10, pady=10, sticky="nesw")
@@ -201,14 +201,16 @@ class Employeebuttonbar(customtkinter.CTkFrame):
         )
         self.remove_button.grid(row=0, column=1, padx=10, pady=10,sticky="nesw")
 
-    def add_employee(self):
-                new_employee = customtkinter.CTkInputDialog(text="Enter employee name:", title="Add Employee", font=("Comic sans", 20))
-                new_employee_text = new_employee.get_input()
-                if self.isNullOrWhiteSpace(new_employee_text):
+    def adding_employee(self):
+                new_employee = customtkinter.CTkInputDialog(text="Enter employee name and the enter department seprated with a ' : '" + "\n"+ 
+                                                            "So for example John : Christies or John : Events", title="Add Employee", font=("Comic sans", 20))
+                new_employee_text = new_employee.get_input().split(":")
+                print (new_employee_text)
+                if self.isNullOrWhiteSpace(new_employee_text[0]) or self.isNullOrWhiteSpace(new_employee_text[1]) or self.correct_department(new_employee_text[1]):
                     tkinter.messagebox.showwarning("Input Error", "Please fill in the employee name.")
                 else:
                     self.db = Database()
-                    self.db.add_employee(new_employee_text)
+                    self.db.add_employee(new_employee_text[0].replace(" ", ""), new_employee_text[1].replace(" ", ""))
                     self.employee_page.refreshEmployees(self.db.search_employees())
                     self.db.close_connection()
                     tkinter.messagebox.showinfo("Success", "Employee added successfully!")
@@ -217,11 +219,24 @@ class Employeebuttonbar(customtkinter.CTkFrame):
                 self.db = Database()
                 self.db.remove_employee(self.sframe.get())
                 self.employee_page.refreshEmployees(self.db.search_employees())
+                if not self.sframe.get(): 
+                    tkinter.messagebox.showinfo("Failure","Please selected an employee")
+                else:
+                    tkinter.messagebox.showinfo("Success", "Employee removed successfully!")
                 self.db.close_connection()
-                tkinter.messagebox.showinfo("Success", "Employee removed successfully!")
+
 
     def isNullOrWhiteSpace(self, str=None):
         return not str or str.isspace()
+    
+    def correct_department(self, text):
+        text = text.replace(" ", "")
+        text = text.lower()
+
+        if text == "christies" or text == "events":
+            return False
+        else:
+            return True
 
 
 class Eventboxes(customtkinter.CTkFrame):

@@ -32,11 +32,11 @@ class Database:
         """)
         self.connection.commit()
 
-    def add_employee(self, name):#need to stop duplicates
+    def add_employee(self, name, dep):#need to stop duplicates
         self.cursor.execute("""
-            INSERT INTO employees (name)
-            VALUES (?)
-        """, (name,))
+            INSERT INTO employees (name, dep)
+            VALUES (?, ?)
+        """, (name, dep))
         self.connection.commit()
 
     def search_employees(self):
