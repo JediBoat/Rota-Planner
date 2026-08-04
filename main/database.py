@@ -55,6 +55,28 @@ class Database:
             [(name,) for name in names]
         )
         self.connection.commit()
+
+    def get_events(self):
+        self.cursor.execute("SELECT name, details FROM events")
+        return self.cursor.fetchall()
+    
+    def add_event(self, name, details):
+        self.cursor.execute("""
+            INSERT INTO events (name, details)
+            VALUES (?, ?)
+        """, (name, details))
+        self.connection.commit()
+
+    def remove_event(self, name):
+        self.cursor.execute("""
+            DELETE FROM events
+            WHERE name = ?
+        """, (name,))
+        self.connection.commit()
+
+    def get_event_names(self):
+        self.cursor.execute("SELECT name FROM events")
+        return [row[0] for row in self.cursor.fetchall()]
     
 
     def close_connection(self):

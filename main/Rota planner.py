@@ -210,17 +210,16 @@ class Eventboxes(customtkinter.CTkFrame):
 
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
+        self.db = Database()
+        result = self.db.get_events()
+        self.db.close_connection
 
-
-        self.event_boxes = EventList(self, event=["Event 1", "Event 2", "Event 3", "Event 4", "Event 5"])
+        self.event_boxes = EventList(self, event=result)
         self.event_boxes.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
 
-
-
-
 class Eventbox(customtkinter.CTkFrame): 
-    def __init__(self, master): ####### Need to add functionality
+    def __init__(self, master, title, text): ####### Need to add functionality
         super().__init__(master)
 
         self.grid_rowconfigure(1, weight=1)
@@ -236,11 +235,11 @@ class Eventbox(customtkinter.CTkFrame):
         self.inner_frame.grid_columnconfigure(1, weight=1)
         self.inner_frame.grid_rowconfigure(2, weight=1)
 
-        self.event_label = customtkinter.CTkLabel(self.inner_frame, text="Event title", font=("Comic sans", 20, "bold"), text_color=("#000000", "#FFFFFF"), anchor="w", width=500)
+        self.event_label = customtkinter.CTkLabel(self.inner_frame, text=title, font=("Comic sans", 20, "bold"), text_color=("#000000", "#FFFFFF"), anchor="w", width=500)
         self.event_label.grid(row=1, column=1, padx=15, pady=10, sticky="w")
         self.event_details = customtkinter.CTkTextbox(self.inner_frame, activate_scrollbars=True, font=("Comic sans", 20), fg_color= "transparent")
         self.event_details.grid(row=2, column=1, padx=5, pady=5, sticky="nsew", columnspan=2)
-        self.event_details.insert("0.0", "Event details go here...")
+        self.event_details.insert("0.0", text)
 
         self.go_button = customtkinter.CTkButton( ####### Need to add functionality
             self.inner_frame,
@@ -267,7 +266,10 @@ class EventList(customtkinter.CTkScrollableFrame):
             row = i // columns
             column = (i % columns) + 1 #2 columns for events
 
-            eventboxes = Eventbox(self)
+            name = value[0]
+            details = value[1]
+
+            eventboxes = Eventbox(self, title=name, text=details)
             eventboxes.grid(row=row, column=column, padx=10, pady=10, sticky="nsew")
             self.events.append(eventboxes) ####### Need to add functionality
 
@@ -361,6 +363,7 @@ class TabbedFrame(customtkinter.CTkFrame):
 
         self.db = Database()
         values = self.db.search_employees()
+        events = self.db.get_event_names()
         self.db.close_connection()
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
@@ -370,7 +373,7 @@ class TabbedFrame(customtkinter.CTkFrame):
         self.scrollable_checkbox_frame_1 = scrollableNames(self, title="Employees", values=values)
         self.scrollable_checkbox_frame_1.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
-        self.scrollable_checkbox_frame_2 = scrollableNames(self, title="Events", values=values)
+        self.scrollable_checkbox_frame_2 = scrollableNames(self, title="Events", values=events)
         self.scrollable_checkbox_frame_2.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
         self.buttonbar = BtnOuput(self, sframe1=self.scrollable_checkbox_frame_1, sframe2=self.scrollable_checkbox_frame_2)
