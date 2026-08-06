@@ -58,7 +58,11 @@ class Database:
         self.connection.commit()
 
     def get_events(self):
-        self.cursor.execute("SELECT name, details FROM events")
+        self.cursor.execute(
+            """
+            SELECT name, details FROM events
+            ORDER BY name ASC
+        """)
         return self.cursor.fetchall()
     
     def add_event(self, name, details):
@@ -76,7 +80,10 @@ class Database:
         self.connection.commit()
 
     def get_event_names(self):
-        self.cursor.execute("SELECT name FROM events")
+        self.cursor.execute("""
+        SELECT name FROM events
+        ORDER BY name ASC
+        """)
         return [row[0] for row in self.cursor.fetchall()]
     
     def update_event(self, name, new_details):

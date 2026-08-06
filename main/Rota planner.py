@@ -203,14 +203,14 @@ class Employeebuttonbar(customtkinter.CTkFrame):
 
     def adding_employee(self):
                 new_employee = customtkinter.CTkInputDialog(text="Enter employee name and the enter department seprated with a ' : '" + "\n"+ 
-                                                            "So for example John : Christies or John : Events", title="Add Employee", font=("Comic sans", 20))
+                                                            "So for example John:Christies or John:Events", title="Add Employee", font=("Comic sans", 20))
                 new_employee_text = new_employee.get_input().split(":")
                 print (new_employee_text)
                 if self.isNullOrWhiteSpace(new_employee_text[0]) or self.isNullOrWhiteSpace(new_employee_text[1]) or self.correct_department(new_employee_text[1]):
                     tkinter.messagebox.showwarning("Input Error", "Please fill in the employee name.")
                 else:
                     self.db = Database()
-                    self.db.add_employee(new_employee_text[0].replace(" ", ""), new_employee_text[1].replace(" ", ""))
+                    self.db.add_employee(new_employee_text[0], new_employee_text[1].replace(" ", ""))
                     self.employee_page.refreshEmployees(self.db.search_employees())
                     self.db.close_connection()
                     tkinter.messagebox.showinfo("Success", "Employee added successfully!")
