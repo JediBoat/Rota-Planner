@@ -42,7 +42,7 @@ class MainFrame(customtkinter.CTkFrame):
         )
         self.event_btn.grid(row=0, column=0, padx=20, pady=20, sticky="ew")
 
-        # Add employee button
+        # Add an employee button
         self.worker_btn = customtkinter.CTkButton(
             self,
             corner_radius=15,
@@ -52,7 +52,7 @@ class MainFrame(customtkinter.CTkFrame):
             width=250,
             image=self.accountimg,
             height=150,
-            text="Add employee",
+            text="Add an employee",
             compound="top",
             anchor="s",
             command=lambda: self.master.show_frame(self.master.employee_page)
@@ -183,7 +183,7 @@ class Employeebuttonbar(customtkinter.CTkFrame):
         #buttons to add and remove employees
         self.add_button = customtkinter.CTkButton(
             self,
-            text="Add Employee",
+            text="Add an Employee",
             height=50,
             text_color=("#000000", "#FFFFFF"),
             command = self.adding_employee,
@@ -203,7 +203,7 @@ class Employeebuttonbar(customtkinter.CTkFrame):
 
     def adding_employee(self):
                 new_employee = customtkinter.CTkInputDialog(text="Enter employee name and the enter department seprated with a ' : '" + "\n"+ 
-                                                            "So for example John:Christies or John:Events", title="Add Employee", font=("Comic sans", 20))
+                                                            "So for example John:Christies or John:Events", title="Add an Employee", font=("Comic sans", 20))
                 new_employee_text = new_employee.get_input().split(":")
                 print (new_employee_text)
                 if self.isNullOrWhiteSpace(new_employee_text[0]) or self.isNullOrWhiteSpace(new_employee_text[1]) or self.correct_department(new_employee_text[1]):
@@ -254,7 +254,7 @@ class Eventboxes(customtkinter.CTkFrame):
 
         self.add_btn = customtkinter.CTkButton(
             self,
-            text="Add Event", 
+            text="Add an Event", 
             text_color=("#000000", "#FFFFFF"),
             font=("Comic sans", 20), 
             command=lambda: self.master.show_frame(self.master.add_event_page)
@@ -438,6 +438,7 @@ class TabbedFrame(customtkinter.CTkFrame):
         self.db = Database()
         values = self.db.search_employees()
         events = self.db.get_event_names()
+        times = self.db.get_times()
         self.db.close_connection()
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
@@ -451,7 +452,7 @@ class TabbedFrame(customtkinter.CTkFrame):
         self.scrollable_checkbox_frame_2 = scrollableNames(self, title="Events", values=events)
         self.scrollable_checkbox_frame_2.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
-        self.scrollable_checkbox_frame_3 = scrollableNames(self, title="Events", values=events)
+        self.scrollable_checkbox_frame_3 = scrollableNames(self, title="Times", values=times)
         self.scrollable_checkbox_frame_3.grid(row=0, column=2, padx=10, pady=10, sticky="nsew")
 
         self.buttonbar = BtnOuput(self, sframe1=self.scrollable_checkbox_frame_1, sframe2=self.scrollable_checkbox_frame_3)
@@ -530,9 +531,20 @@ class App(customtkinter.CTk):
             font=("Comic sans",20), 
             height=50, text="Home",
             text_color=("#000000", "#FFFFFF"),
-            command=lambda: self.show_frame(self.main_frame))#Creates a button named Home for menu option
+            command=lambda: self.show_frame(self.main_frame)) #Creates a button named Home for menu option
         
         self.home_button.grid(row=0, column=0, padx=20, pady=(20, 10))
+
+        self.time_button = customtkinter.CTkButton(
+            self.sidebar, 
+            font=("Comic sans",20), 
+            height=50, text="Times",
+            text_color=("#000000", "#FFFFFF"),
+            command=lambda: self.add_time())#Creates a button named Home for menu option
+        
+        self.time_button.grid(row=1, column=0, padx=20, pady=(20, 10))
+        
+
 
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar, font=("Comic sans",17), text="Appearance Mode:", anchor="w")#Creates a laberl named Appearance for menu option
         self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))#Posistions it on the grid,therefore when the app expand or minmize it will srink or grow to accordance
@@ -542,6 +554,20 @@ class App(customtkinter.CTk):
     def show_frame(self, frame):
         frame.tkraise()
         #function to be run when certain buttons are clicked
+
+    def add_time(self):
+        time_input = customtkinter.CTkInputDialog(text="Please enter a time", title="Add a time", font=("Comic sans", 20))
+        time = time_input.get_input()
+        if time != None:
+            db = Database()
+            db.add_time(time)
+            db.close_connection()
+        
+
+
+    def isNullOrWhiteSpace(self, str=None):
+        return not str or str.isspace()
+
     
     def change_appearance_mode_event(self, new_appearance_mode):#Creates a function that takes inputds of the user request  appearance  of application
         customtkinter.set_appearance_mode(new_appearance_mode)#Changes appearance on apps use input from the menu opition 

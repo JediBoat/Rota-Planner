@@ -94,6 +94,18 @@ class Database:
             WHERE name = ?
         """, (new_details, name))
         self.connection.commit()
+
+    def add_time(self, time):
+        self.cursor.execute("""
+            INSERT INTO times (event_times)
+            VALUES (?)
+        """, (time,))
+        self.connection.commit()
+
+    def get_times(self):
+        self.cursor.execute("SELECT event_times FROM times")
+        return [row[0] for row in self.cursor.fetchall()]
+
     
 
     def close_connection(self):
