@@ -43,6 +43,14 @@ class Database:
         self.cursor.execute("SELECT name FROM employees")
         return [row[0] for row in self.cursor.fetchall()]
 
+    def search_by_dep(self, dep):
+        self.cursor.execute("""
+        SELECT name 
+        FROM employees
+        WHERE dep = ?
+        """, (dep,))
+        return [row[0] for row in self.cursor.fetchall()]
+
     def search_events(self):
         self.cursor.execute("SELECT * FROM events")
         return self.cursor.fetchall()
@@ -103,7 +111,7 @@ class Database:
         self.connection.commit()
 
     def get_times(self):
-        self.cursor.execute("SELECT event_times FROM times")
+        self.cursor.execute("SELECT event_times FROM times ORDER BY event_times ASC")
         return [row[0] for row in self.cursor.fetchall()]
 
     

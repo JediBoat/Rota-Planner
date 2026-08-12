@@ -131,8 +131,8 @@ class AddEventPage(customtkinter.CTkFrame):
 
 # planning events
 class EmployeePage(customtkinter.CTkFrame):
-    def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
+    def __init__(self, master, db_results):
+        super().__init__(master)
         #puts the frame in the middle of the window and makes it responsive to window size
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
@@ -148,11 +148,7 @@ class EmployeePage(customtkinter.CTkFrame):
         self.outer_frame.grid_rowconfigure(1, weight=0)
         self.outer_frame.grid_columnconfigure(0, weight=1)
 
-        self.db = Database()
-        Employees = self.db.search_employees()
-        self.db.close_connection()
-
-        self.refreshEmployees(Employees)
+        self.refreshEmployees(db_results)
 
     #function to update the list of employees when a new employee is added
     def refreshEmployees(self, Employees):
@@ -495,6 +491,7 @@ class App(customtkinter.CTk):
         self.title("Rota Planner")
         self.geometry("1600x800")
         self.db = Database()
+        self.vaules = self.db.search_employees()
         self.db.create_tables()
         self.db.close_connection()
 
@@ -505,7 +502,7 @@ class App(customtkinter.CTk):
         self.planner_frame = PlannerFrame(self)
         self.event_view_frame = Eventboxes(self)
         self.add_event_page = AddEventPage(self, self.event_view_frame)
-        self.employee_page = EmployeePage(self)
+        self.employee_page = EmployeePage(self, self.vaules)
         self.main_frame = MainFrame(self)
 
 
@@ -531,7 +528,8 @@ class App(customtkinter.CTk):
             font=("Comic sans",20), 
             height=50, text="Home",
             text_color=("#000000", "#FFFFFF"),
-            command=lambda: self.show_frame(self.main_frame)) #Creates a button named Home for menu option
+            command=lambda: self.show_frame(self.main_frame)
+            ) #Creates a button named Home for menu option
         
         self.home_button.grid(row=0, column=0, padx=20, pady=(20, 10))
 
@@ -540,9 +538,21 @@ class App(customtkinter.CTk):
             font=("Comic sans",20), 
             height=50, text="Times",
             text_color=("#000000", "#FFFFFF"),
-            command=lambda: self.add_time())#Creates a button named Home for menu option
+            command=lambda: self.add_time()
+            )#Creates a button named Home for menu option
         
         self.time_button.grid(row=1, column=0, padx=20, pady=(20, 10))
+
+        self.switch = customtkinter.CTkSwitch(
+            self.sidebar,
+            font=("Comic sans",20), 
+            height=50, text="EVENTS",
+            text_color=("#000000", "#FFFFFF"),
+            command= lambda: self.check_toggle()
+        )
+        self.switch.grid(row=2, column=0, padx=20, pady=(20, 10))
+
+
         
 
 
@@ -553,6 +563,7 @@ class App(customtkinter.CTk):
 
     def show_frame(self, frame):
         frame.tkraise()
+        self.current_frame = frame
         #function to be run when certain buttons are clicked
 
     def add_time(self):
@@ -563,7 +574,25 @@ class App(customtkinter.CTk):
             db.add_time(time)
             db.close_connection()
         
+    def check_toggle(self):
+        self.db = Database()
+        self.events_dep = self.db.search_by_dep("Events")
+        self.chris_dep = self.db.search_by_dep("Christies")
+        self.db.close_connection()
+    
+        if self.switch.get() == 1:
+            self.switch.configure(text = "CHRISTIES")
+            self.employee_page.destroy()
+            self.employee_page = EmployeePage(self, self.chris_dep)
+            self.employee_page.grid(row=0, column=1, sticky="nsew", padx=20, pady=15)
+            self.show_frame(self.current_frame)
 
+        else:
+            self.switch.configure(text = "EVENTS")
+            self.employee_page.destroy()
+            self.employee_page = EmployeePage(self, self.events_dep)
+            self.employee_page.grid(row=0, column=1, sticky="nsew", padx=20, pady=15)
+            self.show_frame(self.current_frame)
 
     def isNullOrWhiteSpace(self, str=None):
         return not str or str.isspace()
